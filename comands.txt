@@ -1,0 +1,5 @@
+ criar o container do postgres
+
+ docker-compose up -d
+
+ 
