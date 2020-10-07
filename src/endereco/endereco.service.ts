@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {  Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EnderecoRepository } from './endereco.repository';
 import {EnderecoDto} from './dto/endereco.dto';
@@ -12,8 +12,12 @@ export class EnderecoService { constructor(
   ) {}
 
 
-  async getAllEndereco() {
-    return this.enderecoRepository.createQueryBuilder("endereco").groupBy("endereco.bairro");
+ async getAllEndereco() {
+    return await this.enderecoRepository.find()
+  }
+
+  async getEnderecoBairro(bairro: string){
+    return await this.enderecoRepository.find( {where: {bairro}} );
   }
 
   async createEndereco(enderecoDto: EnderecoDto) {

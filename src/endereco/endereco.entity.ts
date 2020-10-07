@@ -1,6 +1,7 @@
 import { Aluno } from 'src/aluno/aluno.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
+
 @Entity()
 export class Endereco{
     @PrimaryGeneratedColumn('uuid')
@@ -18,10 +19,9 @@ export class Endereco{
     @Column({nullable: false, type: 'varchar', length: 50})
     bairro: string;
 
-    @Column()
-    idAluno: number;
-
-    @ManyToOne(type => Aluno, (aluno: Aluno) => aluno.enderecos)
+    @ManyToOne(() => Aluno, aluno => aluno.enderecos)
     aluno: Aluno;
+
+   
 
 }

@@ -1,6 +1,6 @@
 
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Endereco } from '../endereco/endereco.entity';
+import { Endereco } from 'src/endereco/endereco.entity';
 
 @Entity()
 export class Aluno{
@@ -19,8 +19,10 @@ export class Aluno{
     @Column()
     nota: number;
 
-    @OneToMany(type => Endereco, (endereco: Endereco) => endereco.idAluno)
+    @OneToMany(() => Endereco, endereco=> endereco.aluno)
     enderecos: Endereco[];
+
+   
 
 
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import{ AlunoService} from './aluno.service';
 import {AlunoDto} from './dto/aluno.dto';
 
@@ -6,8 +6,8 @@ import {AlunoDto} from './dto/aluno.dto';
 @Controller('aluno')
 export class AlunoController {
 
-    constructor(private readonly alunoService: AlunoService){
-
+    constructor(
+        private readonly alunoService: AlunoService,){
     }
     
     @Get()
@@ -15,24 +15,24 @@ export class AlunoController {
         return this.alunoService.getAllAlunos();
     }
 
+    @Get('media')
+    getAlunoMedia(){
+        return this.alunoService.getAlunoMedia();
+    }
+
     @Get(':id')
     getAlunoId(@Param('id') id:number) {
         return this.alunoService.getAlunoId(id);
     }
 
-    @Get(':id')
+    @Get(':id/endereco')
     getEnderecoAluno(@Param('id') id:number){
-        return this.alunoService.getEnderecosAluno(id);
+        return this.alunoService.getEnderecoAluno(id);
     }
 
     @Get(':nota/:criterio')
     getAlunoCriterio(@Param('nota') nota: number, @Param('criterio') criterio:string){
         return this.alunoService.getNotaCriterio(nota,criterio);
-    }
-
-    @Get()
-    getAlunoMedia(){
-        return this.alunoService.getAlunoMedia();
     }
 
     @Post()
@@ -43,6 +43,11 @@ export class AlunoController {
     @Put(':id')
     updateAluno(@Param('id') id:number, @Body() data: Partial<AlunoDto>) {
         return this.alunoService.updateAluno(id, data);
+    }
+
+    @Delete(':id')
+    deleteAluno(@Param('id') id:number){
+        return this.alunoService.deleteAluno(id);
     }
 
 

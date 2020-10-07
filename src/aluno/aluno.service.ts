@@ -1,8 +1,10 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository, } from '@nestjs/typeorm';
-import {MoreThan, LessThan} from 'typeorm';
+import {MoreThan, LessThan, getRepository} from 'typeorm';
+import { Aluno } from './aluno.entity';
 import { AlunoRepository } from './aluno.repository';
 import {AlunoDto} from './dto/aluno.dto';
+
 
 
 
@@ -43,35 +45,36 @@ export class AlunoService {
         
     }
 
-    async getAluno(nome: string) {
-        return await this.alunoRepository.findOne( {where: {nome}} );
-    }
-
     async getAlunoId(id: number) {
         return await this.alunoRepository.findOne( {where: {id}} );
+    }
+
+    async getEnderecoAluno(id: number){
+        const aluno = await this.alunoRepository.findOne({where: {id}, relations:['enderecos']});
+        
+        return {
+            "total": aluno.enderecos.length,
+            "enderecos": aluno.enderecos,
+        }
     }
 
     async updateAluno(id: number, data: Partial<AlunoDto>) {
        return await this.alunoRepository.update(id, data);
     }
 
-    async getEnderecosAluno(idAluno: number) {
-        const aluno: AlunoDto = (await this.getAlunoId(idAluno))[0];
-        return {
-            total: aluno.enderecos.length,
-            enderecos: aluno.enderecos,
-        };
+    async deleteAluno(id:number){
+        return await this.alunoRepository.delete(id);
     }
 
-    async getNotaCriterio(nota: number, criterio: string){
+    async getNotaCriterio(nota1: number, criterio: string){
         if(criterio === '>'){
             return await this.alunoRepository.find({
-                nota: MoreThan(nota),
+                nota: MoreThan(nota1),
             });
         }
         else if(criterio ==='<') {
             return await this.alunoRepository.find({
-                nota: LessThan(nota),
+                nota: LessThan(nota1),
             });
         }
         else {
@@ -81,17 +84,17 @@ export class AlunoService {
     }
 
     async getAlunoMedia(){
-        let media = 0;
-        let alunos: AlunoDto[]
-
-        alunos.forEach(aluno => {
-            media += aluno.nota
-        });
-        media/= alunos.length;
-
-        return await this.alunoRepository.find({
-            nota: MoreThan(media),
-        });
+            let med = 0.0;
+            let alunos = await this.getAllAlunos();
+            alunos.forEach(aluno => {
+                med += aluno.nota;
+            });
+            med /= alunos.length;
+            
+            med = parseInt(med.toString(), 10);
+            return await this.alunoRepository.find({
+                nota: MoreThan(med),
+            });
 
     }
     
